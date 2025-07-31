@@ -1,0 +1,28 @@
+@api = http://localhost:5138
+
+### Search projects
+GET {{api}}/projects
+Accept: application/json
+
+### Create project
+POST {{api}}/projects
+Accept: application/json
+Content-Type: application/json
+
+{
+    "Name": "My-Project"
+}
+
+### Update project
+PUT {{api}}/projects/{{id}}
+Accept: application/json
+Content-Type: application/json
+
+{
+    "Name": "Your project",
+    "Description": "Just another project",
+    "Status": "Active"
+}
+
+### Delete project
+DELETE {{api}}/projects/{{id}}
