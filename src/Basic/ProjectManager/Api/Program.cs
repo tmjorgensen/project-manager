@@ -3,8 +3,6 @@ using Api.Models.Requests;
 using Api.Models.Responses;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging.Abstractions;
-using System.Runtime.InteropServices;
 
 var builder = WebApplication.CreateBuilder(args);
 
