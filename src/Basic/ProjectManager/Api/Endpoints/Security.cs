@@ -1,4 +1,5 @@
-﻿using Api.Models.Requests;
+﻿using Api.Extensions;
+using Api.Models.Requests;
 using Api.Models.Responses;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
@@ -14,28 +15,31 @@ public static class Security
     {
         var logger = loggerFactory.CreateLogger(nameof(SignIn));
 
-        if (string.IsNullOrWhiteSpace(body.UserName))
-            return Results.BadRequest("Username cnnot be empty.");
-
         try
-        {
-            var securityKey = new SymmetricSecurityKey(
-                Encoding.UTF8.GetBytes(configuration["Auth:Secret"]!)
-            );
+        { 
+        if (string.IsNullOrWhiteSpace(body.UserName))
+                throw new ArgumentException("Username cnnot be empty.");
+
+            var secret = configuration["Auth:Secret"]
+                ?? throw new Exception("Configuration missing for Auth:Secret.");
+            var issuer = configuration["Auth:Issuer"]
+                ?? throw new Exception("Configuration missing for Auth:Issuer.");
+            var audience = configuration["Auth:Audience"]
+                ?? throw new Exception("Configuration missing for Auth:Audience.");
 
             var claims = new List<Claim>
-        {
-            new("sub", body.UserName)
-        };
+            {
+                new("sub", body.UserName)
+            };
 
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(claims),
-                Issuer = configuration["Auth:Issuer"],
-                Audience = configuration["Auth:Audience"],
+                Issuer = issuer,
+                Audience = audience,
                 Expires = DateTime.UtcNow.AddDays(7),
                 SigningCredentials = new SigningCredentials(
-                    securityKey,
+                    new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secret)),
                     SecurityAlgorithms.HmacSha256Signature
                 )
             };
@@ -48,9 +52,9 @@ public static class Security
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "Sign in failed.");
+            logger.LogError(ex, "Sign-in failed.");
 
-            throw;
+            return ex.ToErrorResult("Sign-in failed.");
         }
     }
 }
