@@ -1,5 +1,6 @@
 using Api.Domain;
 using Api.Endpoints;
+using Api.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
@@ -14,17 +15,17 @@ builder.Services
     .AddAuthentication()
     .AddJwtBearer(options =>
     {
+        builder.Configuration.GetAuthSettings(out string secret, out string issuer, out string audience);
+
         options.TokenValidationParameters = new()
         {
-            ValidIssuer = builder.Configuration["Auth:Issuer"],
-            ValidAudience = builder.Configuration["Auth:Audience"],
+            ValidIssuer = issuer,
+            ValidAudience = audience,
             ValidateIssuer = true,
             ValidateAudience = true,
             ValidateLifetime = true,
             ValidateIssuerSigningKey = true,
-            IssuerSigningKey = new SymmetricSecurityKey(
-                Encoding.UTF8.GetBytes(builder.Configuration["Auth:Secret"]!)
-            )
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secret))
         };
     });
 

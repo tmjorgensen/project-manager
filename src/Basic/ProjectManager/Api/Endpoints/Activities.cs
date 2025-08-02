@@ -55,7 +55,7 @@ internal static class Activities
 
     public static async Task<IResult> CreateActivity([FromBody] CreateActivityDto body, ApplicationDbContext dbContext, ILoggerFactory loggerFactory, CancellationToken cancellationToken)
     {
-        var logger = loggerFactory.CreateLogger("CreateActivity");
+        var logger = loggerFactory.CreateLogger(nameof(CreateActivity));
 
         var activity = new Activity();
         dbContext.Activities.Add(activity);

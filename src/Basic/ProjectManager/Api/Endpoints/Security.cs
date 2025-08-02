@@ -17,15 +17,10 @@ public static class Security
 
         try
         { 
-        if (string.IsNullOrWhiteSpace(body.UserName))
+            if (string.IsNullOrWhiteSpace(body.UserName))
                 throw new ArgumentException("Username cnnot be empty.");
 
-            var secret = configuration["Auth:Secret"]
-                ?? throw new Exception("Configuration missing for Auth:Secret.");
-            var issuer = configuration["Auth:Issuer"]
-                ?? throw new Exception("Configuration missing for Auth:Issuer.");
-            var audience = configuration["Auth:Audience"]
-                ?? throw new Exception("Configuration missing for Auth:Audience.");
+            configuration.GetAuthSettings(out string secret, out string issuer, out string audience);
 
             var claims = new List<Claim>
             {
