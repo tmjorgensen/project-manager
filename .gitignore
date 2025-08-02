@@ -417,3 +417,4 @@ FodyWeavers.xsd
 *.msm
 *.msp
 /src/Minimal/ProjectManager/Api/appsettings.Development.json
+/src/Basic/ProjectManager/Api/appsettings.Development.json

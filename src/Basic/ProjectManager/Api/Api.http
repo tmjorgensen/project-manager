@@ -1,11 +1,31 @@
-@api = http://localhost:5138
+@api = https://localhost:7017
+
+### Sign in
+# @name signin
+POST {{api}}/sign-in
+Accept: application/json
+Content-Type: application/json
+
+{
+    "Username": "thomas"
+}
+
+### Extract access token
+@accessToken = {{signin.response.body.$.accessToken}}
+
+####################################33
+# Projects
+####################################33
 
 ### Search projects
 GET {{api}}/projects
+Authorization: Bearer {{accessToken}}
 Accept: application/json
 
 ### Create project
+# @name createproject
 POST {{api}}/projects
+Authorization: Bearer {{accessToken}}
 Accept: application/json
 Content-Type: application/json
 
@@ -13,16 +33,71 @@ Content-Type: application/json
     "Name": "My-Project"
 }
 
+### Extract created project id
+@projectId = {{createproject.response.body.$.id}}
+
+### Get project
+GET {{api}}/projects/{{projectId}}
+Authorization: Bearer {{accessToken}}
+Accept: application/json
+
 ### Update project
-PUT {{api}}/projects/{{id}}
+PUT {{api}}/projects/{{projectId}}
+Authorization: Bearer {{accessToken}}
 Accept: application/json
 Content-Type: application/json
 
 {
     "Name": "Your project",
     "Description": "Just another project",
-    "Status": "Active"
+    "Status": "Closed"
 }
 
 ### Delete project
-DELETE {{api}}/projects/{{id}}
+DELETE {{api}}/projects/{{projectId}}
+Authorization: Bearer {{accessToken}}
+
+####################################33
+# Activities
+####################################33
+
+### Search activities
+GET {{api}}/activities?projectId={{projectId}}
+Authorization: Bearer {{accessToken}}
+Accept: application/json
+
+### Create activity
+# @name createactivity
+POST {{api}}/activities
+Authorization: Bearer {{accessToken}}
+Accept: application/json
+Content-Type: application/json
+
+{
+    "Name": "My-Activity",
+    "ProjectId": "{{projectId}}"
+}
+
+### Extract created activity id
+@activityId = {{createactivity.response.body.$.id}}
+
+### Get activity
+GET {{api}}/activities/{{activityId}}
+Authorization: Bearer {{accessToken}}
+Accept: application/json
+
+### Update activity
+PUT {{api}}/activities/{{activityId}}
+Authorization: Bearer {{accessToken}}
+Accept: application/json
+Content-Type: application/json
+
+{
+    "Name": "Your activity",
+    "Description": "Just another activity",
+    "Status": "Closed"
+}
+
+### Delete activity
+DELETE {{api}}/activities/{{activityId}}
+Authorization: Bearer {{accessToken}}
